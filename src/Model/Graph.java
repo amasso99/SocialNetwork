@@ -45,7 +45,7 @@ public class Graph{
     //TODO 01: Einmal Liste kopieren, bitte! Warum eigentlich kopieren? (O_o)
     vertices.toFirst();
     while(vertices.hasAccess()){
-      result.insert(vertices.getContent());
+      result.append(vertices.getContent());
       vertices.next();
     }
 
@@ -66,7 +66,7 @@ public class Graph{
     //TODO 02: Und nochmal kopieren.
     edges.toFirst();
     while(edges.hasAccess()){
-      result.insert(edges.getContent());
+      result.append(edges.getContent());
       edges.next();
     }
 
@@ -82,11 +82,14 @@ public class Graph{
    */
   public Vertex getVertex(String pID){
     //TODO 03: Knoten-Objekt finden.
-    while(vertices.hasAccess()){
-      if(vertices.getContent().getID().equals(pID)){
-        return vertices.getContent();
+    if(pID != null) {
+      vertices.toFirst();
+      while (vertices.hasAccess()) {
+        if (vertices.getContent().getID().equals(pID)) {
+          return vertices.getContent();
+        }
+        vertices.next();
       }
-      vertices.next();
     }
     return null;
   }

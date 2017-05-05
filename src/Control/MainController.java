@@ -24,12 +24,21 @@ public class MainController {
      * Fügt Personen dem sozialen Netzwerk hinzu.
      */
     private void createSomeUsers(){
+        insertUser("Jesus");
         insertUser("Ulf");
-        insertUser("Silent Bob");
         insertUser("Dörte");
         insertUser("Ralle");
+        insertUser("Monkey D. Luffy");
+        insertUser("Jimbei");
+        befriend("Jesus", "Ulf");
+        befriend("Jesus", "Dörte");
+        befriend("Jesus", "Ralle");
+        befriend("Jesus", "Monkey D. Luffy");
+
+        befriend("Jesus", "Jimbei");
         befriend("Silent Bob", "Ralle");
         befriend("Dörte", "Ralle");
+        befriend("Jimbei", "Monkey D. Luffy");
     }
 
     /**
@@ -39,6 +48,10 @@ public class MainController {
      */
     public boolean insertUser(String name){
         //TODO 05: Nutzer dem sozialen Netzwerk hinzufügen.
+        if(allUsers.getVertex(name) == null) {
+            allUsers.addVertex(new Vertex(name));
+            return true;
+        }
         return false;
     }
 
@@ -49,6 +62,11 @@ public class MainController {
      */
     public boolean deleteUser(String name){
         //TODO 07: Nutzer aus dem sozialen Netzwerk entfernen.
+        Vertex temp = allUsers.getVertex(name);
+        if(temp != null){
+            allUsers.removeVertex(temp);
+            return true;
+        }
         return false;
     }
 
@@ -58,7 +76,20 @@ public class MainController {
      */
     public String[] getAllUsers(){
         //TODO 06: String-Array mit allen Nutzernamen erstellen.
+        if(!allUsers.isEmpty()) {
+            return vertexListToArray(allUsers.getVertices());
+        }
         return null;
+    }
+
+    private String[] vertexListToArray(List<Vertex> list){
+        String[] out = new String[getSize(list)];
+        list.toFirst();
+        for (int i = 0; i < out.length; i++) {
+            out[i] = list.getContent().getID();
+            list.next();
+        }
+        return out;
     }
 
     /**
@@ -68,6 +99,10 @@ public class MainController {
      */
     public String[] getAllFriendsFromUser(String name){
         //TODO 09: Freundesliste eines Nutzers als String-Array erstellen.
+        Vertex vertex = allUsers.getVertex(name);
+        if(vertex != null){
+            return vertexListToArray(allUsers.getNeighbours(vertex));
+        }
         return null;
     }
 
@@ -80,7 +115,13 @@ public class MainController {
      */
     public double centralityDegreeOfUser(String name){
         //TODO 10: Prozentsatz der vorhandenen Freundschaften eines Nutzers von allen möglichen Freundschaften des Nutzers.
-        return 0.125456;
+        Vertex temp = allUsers.getVertex(name);
+        if(name != null){
+            double allFriends = getSize(allUsers.getVertices())-1;
+            double tempFriends = getSize(allUsers.getNeighbours(temp));
+            return tempFriends/allFriends;
+        }
+        return -1.0;
     }
 
     /**
@@ -91,6 +132,12 @@ public class MainController {
      */
     public boolean befriend(String name01, String name02){
         //TODO 08: Freundschaften schließen.
+        Vertex f1 = allUsers.getVertex(name01);
+        Vertex f2 = allUsers.getVertex(name02);
+        if(f1 != null && f2 != null){
+            allUsers.addEdge(new Edge(f1,f2,0f));
+            return true;
+        }
         return false;
     }
 
@@ -102,6 +149,13 @@ public class MainController {
      */
     public boolean unfriend(String name01, String name02){
         //TODO 11: Freundschaften beenden.
+        Vertex f1 = allUsers.getVertex(name01);
+        Vertex f2 = allUsers.getVertex(name02);
+        Edge edge = allUsers.getEdge(f1,f2);
+        if(f1 != null && f2 != null && edge != null){
+            allUsers.removeEdge(edge);
+            return true;
+        }
         return false;
     }
 
@@ -129,5 +183,16 @@ public class MainController {
             //TODO 13: Schreibe einen Algorithmus, der mindestens ein Verbindung von einem Nutzer über Zwischennutzer zu einem anderem Nutzer bestimmt. Happy Kopfzerbrechen!
         }
         return null;
+    }
+
+    public int getSize(List list){
+        int counter = 0;
+        list.toFirst();
+        while(list.hasAccess()){
+            counter++;
+            list.next();
+        }
+        return counter;
+
     }
 }
