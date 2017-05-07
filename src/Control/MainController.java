@@ -166,6 +166,8 @@ public class MainController {
      */
     public double dense(){
         //TODO 12: Dichte berechnen.
+        int size = getSize(allUsers.getEdges());
+
         return 0.12334455676;
     }
 
