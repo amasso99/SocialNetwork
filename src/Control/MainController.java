@@ -5,6 +5,8 @@ import Model.Graph;
 import Model.List;
 import Model.Vertex;
 
+import java.util.stream.IntStream;
+
 /**
  * Created by Jean-Pierre on 12.01.2017.
  */
@@ -134,7 +136,7 @@ public class MainController {
         //TODO 08: Freundschaften schließen.
         Vertex f1 = allUsers.getVertex(name01);
         Vertex f2 = allUsers.getVertex(name02);
-        if(f1 != null && f2 != null){
+        if(f1 != null && f2 != null && allUsers.getEdge(f1,f2) == null){
             allUsers.addEdge(new Edge(f1,f2,0f));
             return true;
         }
@@ -166,9 +168,10 @@ public class MainController {
      */
     public double dense(){
         //TODO 12: Dichte berechnen.
-        int size = getSize(allUsers.getEdges());
+        int amount = getSize(allUsers.getEdges());
+        double posAmount = IntStream.range(1,getSize(allUsers.getVertices())).sum();
 
-        return 0.12334455676;
+        return amount/posAmount;
     }
 
     /**
