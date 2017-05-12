@@ -26,21 +26,27 @@ public class MainController {
      * Fügt Personen dem sozialen Netzwerk hinzu.
      */
     private void createSomeUsers(){
-        insertUser("Jesus");
-        insertUser("Ulf");
-        insertUser("Dörte");
-        insertUser("Ralle");
-        insertUser("Monkey D. Luffy");
-        insertUser("Jimbei");
-        befriend("Jesus", "Ulf");
-        befriend("Jesus", "Dörte");
-        befriend("Jesus", "Ralle");
-        befriend("Jesus", "Monkey D. Luffy");
+        insertUser("1");
+        insertUser("2");
+        insertUser("3");
+        insertUser("4");
+        insertUser("5");
+        insertUser("6");
 
-        befriend("Jesus", "Jimbei");
-        befriend("Silent Bob", "Ralle");
-        befriend("Dörte", "Ralle");
-        befriend("Jimbei", "Monkey D. Luffy");
+        befriend("1","2");
+        befriend("1","3");
+
+
+        befriend("2","4");
+
+
+        befriend("5","6");
+
+
+        befriend("3","5");
+
+        befriend("4","3");
+
     }
 
     /**
@@ -188,9 +194,33 @@ public class MainController {
             //TODO 13: Schreibe einen Algorithmus, der mindestens ein Verbindung von einem Nutzer über Zwischennutzer zu einem anderem Nutzer bestimmt. Happy Kopfzerbrechen!
             //Tiefensuche
 
-
+            List<Vertex> list = searchVertex(user01,user02);
+            return vertexListToArray(list);
         }
         return null;
+    }
+
+    private List<Vertex> searchVertex(Vertex start, Vertex target) {
+        List<Vertex> temp = new List<>();
+        temp.append(start);
+        start.setMark(true);
+        List<Vertex> neighbours = allUsers.getNeighbours(start);
+        if (!neighbours.isEmpty()) {
+            neighbours.toFirst();
+            while (neighbours.hasAccess()) {
+                if (!neighbours.getContent().isMarked()) {
+                    if (neighbours.getContent() != target) {
+                        temp.concat(searchVertex(neighbours.getContent(), target));
+                    } else {
+                        temp.append(target);
+                        neighbours.toLast();
+                    }
+                }
+                neighbours.next();
+            }
+            return temp;
+        }
+        return new List<Vertex>();
     }
 
     public int getSize(List list){
