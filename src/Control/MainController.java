@@ -26,26 +26,20 @@ public class MainController {
      * Fügt Personen dem sozialen Netzwerk hinzu.
      */
     private void createSomeUsers(){
-        insertUser("1");
-        insertUser("2");
-        insertUser("3");
-        insertUser("4");
-        insertUser("5");
-        insertUser("6");
-
-        befriend("1","2");
-        befriend("1","3");
-
-
-        befriend("2","4");
-
-
-        befriend("5","6");
-
-
-        befriend("3","5");
-
-        befriend("4","3");
+        insertUser("Jesus");
+        insertUser("Ulf");
+        insertUser("Dörte");
+        insertUser("Ralle");
+        insertUser("Oussama");
+        insertUser("Jimbei");
+        befriend("Jesus", "Ulf");
+        befriend("Jesus", "Dörte");
+        befriend("Jesus", "Ralle");
+        befriend("Jesus", "Oussama");
+        befriend("Jesus", "Jimbei");
+        befriend("Silent Bob", "Ralle");
+        befriend("Dörte", "Ralle");
+        befriend("Jimbei", "Oussama");
 
     }
 
@@ -191,11 +185,49 @@ public class MainController {
         Vertex user01 = allUsers.getVertex(name01);
         Vertex user02 = allUsers.getVertex(name02);
         if(user01 != null && user02 != null){
-            //TODO 13: Schreibe einen Algorithmus, der mindestens ein Verbindung von einem Nutzer über Zwischennutzer zu einem anderem Nutzer bestimmt. Happy Kopfzerbrechen!
-            //Tiefensuche
+            //Code muss noch geschrieben werden.
+            allUsers.setAllVertexMarks(false);
 
-            List<Vertex> list = searchVertex(user01,user02);
-            return vertexListToArray(list);
+            List<Vertex> link = new List<>();               //Wird verwendet wie ein Stapel.
+            boolean foundUser02 = false;                    //Abbruchbedingung: Es wurde eine Verbindung gefunden
+
+            List<Vertex> vertexesToVisit = new List<>();    //Wird verwendet wie eine Schlange.
+            vertexesToVisit.append(user01);
+            vertexesToVisit.toFirst();
+
+            while(vertexesToVisit.hasAccess() && !foundUser02){ //Solange es noch unbesuchte Knoten gibt, die mit user01 über Wege verbunden sind und der user02 noch nicht gefunden ist...
+                Vertex v = vertexesToVisit.getContent();
+                v.setMark(true);
+                System.out.println("V: " + v.getID());
+                link.append(v);
+                if(v == user02){
+                    foundUser02 = true;
+                }
+
+                if(!foundUser02){
+                    vertexesToVisit.remove();
+                    List<Vertex> neighbours = allUsers.getNeighbours(v);
+                    neighbours.toFirst();
+                    while(neighbours.hasAccess()){
+                        System.out.println("Nachbar: " + neighbours.getContent().getID());
+                        if(neighbours.getContent().isMarked()){
+                            neighbours.remove();
+                        }else {
+                            neighbours.next();
+                        }
+                    }
+                    System.out.println("Anzahl unmarkierter Nachbarn: " + getSize(neighbours));
+                    if(neighbours.isEmpty()){
+                        link.toLast();
+                        link.remove();
+                    }else{
+                        vertexesToVisit.concat(neighbours);
+                    }
+                }
+
+                vertexesToVisit.toFirst();
+            }
+            return vertexListToArray(link);
         }
         return null;
     }
@@ -220,7 +252,7 @@ public class MainController {
             }
             return temp;
         }
-        return new List<Vertex>();
+        return new List<>();
     }
 
     public int getSize(List list){
